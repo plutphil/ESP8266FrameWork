@@ -1,0 +1,8 @@
+#define DEF_WIFI_MODE "STA"
+#define DEF_WIFI1_SSID "test"
+#define DEF_WIFI1_PSK "test"
+#define DEF_DNS_NAME "esp8266"
+#define DEFAULT_AP_SSID "LED_mat"
+#define DEFAULT_AP_PSK  "#0NoSpoon"
+#define HTTP_USER "admin"
+#define HTTP_PW  "mysecretpassword"

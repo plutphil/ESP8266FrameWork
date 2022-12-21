@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>INDEX</h1>
+    <form id="u" method="POST" action="/u" enctype="multipart/form-data">
+        <input type="file" id="f1" name="d" onchange="u()" />
+        <progress id="pbar" value=0 min=0 max=100></progress>
+        <h3 id="stat"></h3>
+        <p id="load"></p>
+    </form>
+    <button onclick="u()">UPLOAD</button>
+    <a href="/r">REBOOT</a>
+    <div id="fs"></div>
+    <div id="sc"></div>
+
+    <script>
+        let d = document,
+            _ = i => d.getElementById(i),
+            cr = t => d.createElement(t),
+            ap = t => d.body.appendChild(t);
+        crap = t => ap(cr(t));
+        del = (p) => {
+            fetch("/d?p")
+            fs.innerHTML = ""
+            fs.appendChild(fetchtab("/l"))
+        }
+        ren = (p) => {
+            fs.innerHTML = ""
+            fs.appendChild(fetchtab("/l"))
+
+        }
+        fetchtab = u => {
+            t = cr("table");
+            fetch(u).then(e => e.text()).then(
+                e => {
+                    e.split("\n").forEach(e => {
+                        if (e == "") return;
+                        tr = cr("tr")
+                        t.appendChild(tr)
+                        a = cr("a")
+                        tr.appendChild(a)
+                        vals = e.split(",");
+                        path = vals[0];
+                        a.href = "/" + path
+                        vals.forEach(e => {
+                            td = cr("td")
+                            a.appendChild(td)
+                            td.innerText = e;
+                        })
+                        td = cr("td");
+                        tr.appendChild(td);
+                        td.innerText = "Delete";
+                        td.onclick = e => {
+                            del(path)
+                        }
+                        td = cr("td");
+                        tr.appendChild(td);
+                        td.innerText = "Rename";
+                        td.onclick = e => {
+                            ren(path)
+                        };
+                    })
+                }
+            )
+            return t;
+        }
+        fs = _("fs")
+        sc = _("sc")
+        fs.innerHTML = ""
+        fs.appendChild(fetchtab("/l"))
+            //fetch("config.txt").then(e => e.text()).then(e => crap("div").innerText = e)
+        prog = e => {
+            _("load").innerHTML = "Uploaded " + event.loaded + " bytes";
+            var percent = (event.loaded / event.total) * 100;
+            _("pbar").value = Math.round(percent);
+            _("stat").innerHTML = Math.round(percent) + "% uploaded... please wait";
+            if (percent >= 100) {
+                _("stat").innerHTML = "Please wait, writing file to filesystem";
+            }
+        }
+
+        compl = (e) => {
+            _("stat").innerHTML = "Upload Complete";
+            _("pbar").value = 0;
+            _("stat").innerHTML = "File Uploaded";
+        }
+
+        errh = (e) => {
+            _("status").innerHTML = "Upload Failed";
+        }
+
+        aborth = (e) => {
+            _("status").innerHTML = "inUpload Aborted";
+        }
+        u = e => {
+            console.log(e);
+            let file = _("f1").files[0];
+            // alert(file.name+" | "+file.size+" | "+file.type);
+            let formdata = new FormData();
+            formdata.append("file1", file);
+            let ajax = new XMLHttpRequest();
+            ajax.upload.addEventListener("progress", prog, false);
+            ajax.addEventListener("load", compl, false); // doesnt appear to ever get called even upon success
+            ajax.addEventListener("error", errh, false);
+            ajax.addEventListener("abort", aborth, false);
+            ajax.open("POST", "/u");
+            ajax.send(formdata);
+        }
+        es = new EventSource('/events');
+        addMessage = (m) => {
+            msg = crap("div");
+            msg.innerText = String(m);
+        }
+        es.onopen = (e) => {
+            addMessage("Events Opened");
+        };
+        es.onerror = (e) => {
+            if (e.target.readyState != EventSource.OPEN) {
+                addMessage("Events Closed");
+            }
+        };
+        es.onmessage = (e) => {
+            addMessage("Event: " + e.data);
+        };
+        es.addEventListener('ota', (e) => {
+            addMessage("Event[ota]: " + e.data);
+        }, false);
+        sc = e => {
+            fetch("/s").then(e => e.text()).then(e => {
+                sc.innerHTML = ""
+                t = cr("table")
+                sc.appendChild(t);
+                e.split("\n").forEach(e => {
+                    tr = cr("tr");
+                    t.appendChild(tr);
+
+                    splt = e.split(",");
+
+                    td = cr("td");
+                    tr.appendChild(td);
+                    td.innerText = splt[0]
+
+                    td = cr("td");
+                    tr.appendChild(td);
+                    td.innerText = splt[0]
+
+                    td = cr("td");
+                    tr.appendChild(td);
+                    td.innerText = splt[0]
+
+                    td = cr("td");
+                    tr.appendChild(td);
+                    td.innerText = splt[0]
+
+                    td = cr("td");
+                    tr.appendChild(td);
+                    td.innerText = splt[0]
+
+                    td = cr("td");
+                    tr.appendChild(td);
+                    td.innerText = splt[0]
+
+
+                })
+            })
+        }
+    </script>
+    <button onclick="sc();">Scan WiFis</button>
+</body>
+
+</html>
